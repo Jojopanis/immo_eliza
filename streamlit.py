@@ -7,6 +7,7 @@ st.title("House predictor")
 district = None
 subtype = None
 province = None
+sale_type = None
 
 with st.container(border=True):
     col1, col2 = st.columns(2)
@@ -20,7 +21,7 @@ with st.container(border=True):
     elif proprety_type == 'Apartment':
         subtype = st.selectbox('Subtype of property', ['Apartment', 'Ground Floor', 'Duplex', 'Flat Studio', 'Penthouse', 'Service Flat', 'Kot', 'Loft', 'Triplex','Show House'], index=None)
 
-if subtype:
+if subtype and sale_type:
     with st.container(border=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -126,4 +127,4 @@ if st.button('Calculate'):
         'PEB': peb
         }
     res = requests.post(url='http://127.0.0.1:8000/predict', data=json.dumps(inputs))
-    st.subheader(f'Response from the API: {res.text}')
+    st.subheader(f'We estimate this good at around : {res.text:.2f} €')
