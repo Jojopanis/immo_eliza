@@ -163,3 +163,6 @@ cython_debug/
 
 # objects
 *.pkl
+
+# data viewer
+*.ipynb

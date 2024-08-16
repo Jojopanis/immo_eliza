@@ -4,8 +4,9 @@ import json
 
 st.title("House predictor")
 
+district = None
+subtype = None
 province = None
-sale = None
 
 with st.container(border=True):
     col1, col2 = st.columns(2)
@@ -15,11 +16,11 @@ with st.container(border=True):
         if proprety_type:
             sale_type = st.radio('Type of sale', ['Sale', 'Rental'], index=None)
     if proprety_type == 'House':
-        subtype = st.selectbox('Subtype of property', ['House', 'Villa', 'Mansion', 'Farmhouse', 'Town house', 'Cottage', 'Bungalow', 'Chalet', 'Castle', 'Country house', 'Exceptional property', 'Other'], index=None)
+        subtype = st.selectbox('Subtype of property', ['House', 'Villa', 'Apartment Block', 'Mixed Used Building', 'Mansion' ,'Town House', 'Bungalow', 'Exceptional Property', 'Country Cottage', 'Farmhouse', 'Chalet', 'Other Property', 'Manor House', 'Castle', 'Pavilion'], index=None)
     elif proprety_type == 'Apartment':
-        subtype = st.selectbox('Subtype of property', ['Apartment', 'Duplex', 'Triplex', 'Studio', 'Loft', 'Ground floor', 'Penthouse', 'Service flat', 'Exceptional property', 'Other'], index=None)
+        subtype = st.selectbox('Subtype of property', ['Apartment', 'Ground Floor', 'Duplex', 'Flat Studio', 'Penthouse', 'Service Flat', 'Kot', 'Loft', 'Triplex','Show House'], index=None)
 
-if sale_type:
+if subtype:
     with st.container(border=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -31,8 +32,30 @@ if sale_type:
                 province = st.selectbox('Province', ['Hainaut', 'Liège','Luxembourg','Namur','Walloon Brabant'], index=None)
             elif region == 'Brussels':
                 province = st.selectbox('Province', ['Brussels'])
+        if province == 'Antwerp':
+            district = st.selectbox('District', ['Antwerp', 'Mechelen', 'Turnhout'], index=None)
+        elif province == 'Flemish Brabant':
+            district = st.selectbox('District', ['Halle-Vilvoorde', 'Leuven'], index=None)
+        elif province == 'Limburg':
+            district = st.selectbox('District', ['Hasselt', 'Maaseik', 'Tongeren'], index=None)
+        elif province == 'East Flanders':
+            district = st.selectbox('District', ['Aalst', 'Dendermonde', 'Eeklo', 'Gent', 'Oudenaarde', 'Sint-Niklaas'], index=None)
+        elif province == 'West Flanders':
+            district = st.selectbox('District', ['Brugge', 'Diksmuide', 'Ieper', 'Kortrijk', 'Oostend', 'Roeselare', 'Tielt', 'Veurne'], index=None)
+        elif province == 'Hainaut':
+            district = st.selectbox('District', ['Ath', 'Charleroi', 'Mouscron', 'Soignies', 'Thuin', 'Tournai', 'Mons'], index=None)
+        elif province == 'Liège':
+            district = st.selectbox('District', ['Huy', 'Liège', 'Verviers', 'Waremme'], index=None)
+        elif province == 'Luxembourg':
+            district = st.selectbox('District', ['Arlon', 'Bastogne', 'Marche-en-Famenne', 'Neufchâteau', 'Virton'], index=None)
+        elif province == 'Namur':
+            district = st.selectbox('District', ['Dinant', 'Namur', 'Philippeville'], index=None)
+        elif province == 'Walloon Brabant':
+            district = st.selectbox('District', ['Nivelles'])
+        elif province == 'Brussels':
+            district = st.selectbox('District', ['Brussels'])
 
-if province:
+if district:
     with st.container(border=True):
         col1, col2, col3, col4 = st.columns(4)
         bedroom_count = col1.number_input('Number of bedrooms', min_value=0, max_value=10, value=1)
@@ -67,14 +90,40 @@ if province:
                 furnished = col2.checkbox('Furnished')
     col1, col2 = st.columns(2)
     construction_year = col1.number_input('Construction year', min_value=0, max_value=2032, value=2000)
-    facade_count = col2.slider('Number of facades', min_value=2, max_value=4, value=2)
+    if subtype == 'Villa':
+        facade_count = col2.slider('Number of facades', min_value=2, max_value=4, value=4)
+    else:
+        facade_count = col2.slider('Number of facades', min_value=2, max_value=4, value=2)
     col1, col2 = st.columns(2)
-    kitchen = col1.selectbox('Kitchen', ['Installed', 'Hyper-equipped', 'Semi-equipped', 'Not installed'], index=None)
-    state = col2.selectbox('State of building', ['New', 'Good', 'To be renovated', 'Just renovated', 'To renovate'], index=None)
-    peb = st.select_slider('Energy performance', ['G','F','E','D','C','B','A'], value=('B'))
+    kitchen = col1.selectbox('Kitchen', ['Installed', 'Hyper-equipped', 'Semi-equipped', 'Not installed', 'USA Hyper-equipped', 'USA Installed', 'USA Semi-Equipped', 'USA Uninstalled'], index=0)
+    state = col2.selectbox('State of building', ['As new', 'Good', 'Just renovated', 'To renovate', 'To be done up', 'To restore'], index=1)
+    peb = st.select_slider('Energy performance', ['G','F','E','D','C','B','A','A+','A++'], value=('B'))
 
 if st.button('Calculate'):
-    inputs = {'province': province, 'sale': sale, 'proprety_type': proprety_type, 'subtype': subtype, 'region': region, 'bedroom_count': bedroom_count, 'bathroom_count': bathroom_count, 'toilet_count': toilet_count, 'shower_count': shower_count, 'living_area': living_area, 'garden': garden, 'garden_area': garden_area, 'plot': plot, 'plot_area': plot_area, 'pool': pool, 'fireplace': fireplace, 'terrace': terrace, 'furnished': furnished, 'construction_year': construction_year, 'facade_count': facade_count, 'kitchen': kitchen, 'state': state, 'peb': peb}
-    # st.subheader(f'Inputs: {json.dumps(inputs)}')
+    inputs = {
+        'TypeOfProperty': proprety_type,
+        'TypeOfSale': sale_type,
+        'SubtypeOfProperty': subtype,
+        'Region': region,
+        'Province': province,
+        'District': district,
+        'BedroomCount': bedroom_count,
+        'BathroomCount': bathroom_count,
+        'ToiletCount': toilet_count,
+        'ShowerCount': shower_count,
+        'LivingArea': living_area,
+        'Garden': garden,
+        'GardenArea': garden_area,
+        'SurfaceOfPlot': plot_area,
+        'SwimmingPool': pool,
+        'Fireplace': fireplace,
+        'Furnished': furnished,
+        'Terrace': terrace,
+        'ConstructionYear': construction_year,
+        'NumberOfFacades': facade_count,
+        'Kitchen': kitchen,
+        'StateOfBuilding': state,
+        'PEB': peb
+        }
     res = requests.post(url='http://127.0.0.1:8000/predict', data=json.dumps(inputs))
     st.subheader(f'Response from the API: {res.text}')
