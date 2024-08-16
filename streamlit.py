@@ -100,31 +100,31 @@ if district:
     state = col2.selectbox('State of building', ['As new', 'Good', 'Just renovated', 'To renovate', 'To be done up', 'To restore'], index=1)
     peb = st.select_slider('Energy performance', ['G','F','E','D','C','B','A','A+','A++'], value=('B'))
 
-if st.button('Calculate'):
-    inputs = {
-        'TypeOfProperty': proprety_type,
-        'TypeOfSale': sale_type,
-        'SubtypeOfProperty': subtype,
-        'Region': region,
-        'Province': province,
-        'District': district,
-        'BedroomCount': bedroom_count,
-        'BathroomCount': bathroom_count,
-        'ToiletCount': toilet_count,
-        'ShowerCount': shower_count,
-        'LivingArea': living_area,
-        'Garden': garden,
-        'GardenArea': garden_area,
-        'SurfaceOfPlot': plot_area,
-        'SwimmingPool': pool,
-        'Fireplace': fireplace,
-        'Furnished': furnished,
-        'Terrace': terrace,
-        'ConstructionYear': construction_year,
-        'NumberOfFacades': facade_count,
-        'Kitchen': kitchen,
-        'StateOfBuilding': state,
-        'PEB': peb
-        }
-    res = requests.post(url='http://127.0.0.1:8000/predict', data=json.dumps(inputs))
-    st.subheader(f'We estimate this good at around : {res.text:.2f} €')
+    if st.button('Calculate'):
+        inputs = {
+            'TypeOfProperty': proprety_type,
+            'TypeOfSale': sale_type,
+            'SubtypeOfProperty': subtype,
+            'Region': region,
+            'Province': province,
+            'District': district,
+            'BedroomCount': bedroom_count,
+            'BathroomCount': bathroom_count,
+            'ToiletCount': toilet_count,
+            'ShowerCount': shower_count,
+            'LivingArea': living_area,
+            'Garden': garden,
+            'GardenArea': garden_area,
+            'SurfaceOfPlot': plot_area,
+            'SwimmingPool': pool,
+            'Fireplace': fireplace,
+            'Furnished': furnished,
+            'Terrace': terrace,
+            'ConstructionYear': construction_year,
+            'NumberOfFacades': facade_count,
+            'Kitchen': kitchen,
+            'StateOfBuilding': state,
+            'PEB': peb
+            }
+        res = requests.post(url='http://127.0.0.1:8000/predict', data=json.dumps(inputs))
+        st.subheader(f'We estimate this good at around : {float(res.text):.2f} €')
